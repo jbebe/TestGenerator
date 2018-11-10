@@ -7,28 +7,37 @@ using TestTypes;
 
 namespace TestGenerator.Generator
 {
-	class TestSyntaxRewriter : CSharpSyntaxRewriter
-	{
-		public readonly TestType testType;
+  class TestSyntaxRewriter : CSharpSyntaxRewriter
+  {
+    public readonly TestType testType;
+    public readonly RewriterHelper helper;
 
-		public TestSyntaxRewriter(TestType testType): base()
-		{
-			this.testType = testType;
-		}
+    public TestSyntaxRewriter(TestType testType) : base()
+    {
+      this.testType = testType;
+      this.helper = new RewriterHelper(testType);
+    }
 
-		public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+    public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
+    {
+      if (trivia.IsKind(SyntaxKind.MultiLineCommentTrivia) || trivia.IsKind(SyntaxKind.SingleLineCommentTrivia))
+      {
+        return base.VisitTrivia(default(SyntaxTrivia));
+      }
+      return base.VisitTrivia(trivia);
+    }
+
+    public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
 		{
-			return RewriterHelper.ProcessNamespace(node);
+      node = helper.ProcessClassDeclaration(node);
+      return base.VisitClassDeclaration(node);
 		}
 
 		public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
 		{
-			if (node.IsTestMethod())
-			{
-				return RewriterHelper.ProcessTestMethod(node);
-			}
-
-			return node;
+      node = helper.ProcessMethod(node);
+      return base.VisitMethodDeclaration(node);
 		}
-	}
+
+  }
 }

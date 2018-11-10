@@ -48,11 +48,12 @@ namespace TestGenerator
         // Save file
         string generatedTestName = Common.GetGeneratedTestName(testFileName, testType);
         string generatedTestFilePath = Path.Join(testPath, generatedTestName);
-        File.WriteAllText(generatedTestFilePath, root.ToFullString());
+        string formattedOutput = root.ToFullString();
+        File.WriteAllText(generatedTestFilePath, formattedOutput);
       }
 
-      testTypes.AsParallel().ForAll(processFileWithTestType);
-      //processFileWithTestType(TestType.Local);
+      //testTypes.AsParallel().ForAll(processFileWithTestType);
+      processFileWithTestType(TestType.Local);
 
     }
 	}

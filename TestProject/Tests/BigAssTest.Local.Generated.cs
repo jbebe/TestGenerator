@@ -3,35 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using TestTypes;
 
-namespace TestProject.Generated{
-  [TestClass]
-  class BigAssTest
+namespace TestProject
+{
+  partial class BigAssTest
   {
-    [TestInitialize]
-    public void Init()
-    {
 
-    }
-
-    // comment that should be ignored
-    [TestMethod] // should be parsed
-    [TestComponent(Component.Alpha)] // add AL_ prefix
-    [LocalTest(SmokeTest = true, Production = true)] // generate local test, local smoke test, add ignore production flag
+    
+    [TestMethod] 
+    [TestComponent(Component.Alpha)] 
+    [LocalTest(SmokeTest = true)] 
     [RemoteTest(SmokeTest = true, Production = true)]
-    public void TestCase1()
+    public void AL_L_TestCase1()
     {
-      int a = 5;
-      Debug.Assert(a == 5);
+      TestCase1();
     }
     [TestMethod]
     [TestComponent(Component.Beta)]
     [LocalTest(SmokeTest = true, Production = true)]
-    public void TestCase2()
+    public async Task BE_L_TestCase2()
     {
-      int a = 10;
-      Debug.Assert(a == 5);
+      await TestCase2();
     }
   }
 }

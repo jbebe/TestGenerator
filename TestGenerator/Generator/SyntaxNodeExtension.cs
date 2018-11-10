@@ -4,62 +4,33 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace TestGenerator.Generator
 {
 	public static class SyntaxNodeExtension
 	{
-		public static bool IsTestMethod(this SyntaxNode method)
-			=> method
-			.QueryNodesAtPath(new[] {
-				SyntaxKind.AttributeList,
-				SyntaxKind.Attribute,
-				SyntaxKind.IdentifierName
-			})
-			.First()
-			.GetText().ToString() == "TestMethod";
+		public static bool IsTestMethod(this MethodDeclarationSyntax method)
+    {
+      var attributes = method.AttributeLists;
+      var isTestMethod = attributes.Any((x) => x.Attributes.Any((y) => y.ToString() == "TestMethod"));
+      return isTestMethod;
+    }
 
-		public static IEnumerable<SyntaxNode> GetMethods(this SyntaxNode @class)
-			=> @class.ChildNodes().Where((x) => x.IsKind(SyntaxKind.MethodDeclaration));
+    public static SyntaxTriviaList AsList(this SyntaxTrivia trivia)
+      => new SyntaxTriviaList(trivia);
 
-		public static IEnumerable<SyntaxNode> GetTestMethods(this SyntaxNode @class)
-			=> @class.GetMethods().Where((x) => x.IsTestMethod());
-
-		public static List<SyntaxNode> GetClasses(this SyntaxNode root)
-		{
-			var classes = new List<SyntaxNode>();
-
-			void findClassesRecursive(SyntaxNode currentRoot)
-			{
-				foreach (var node in currentRoot.ChildNodes())
-				{
-					if (node.IsKind(SyntaxKind.NamespaceDeclaration))
-					{
-						findClassesRecursive(node);
-					}
-					else if (node.IsKind(SyntaxKind.ClassDeclaration))
-					{
-						classes.Add(node);
-					}
-				}
-			}
-
-			findClassesRecursive(root);
-
-			return classes;
-		}
-
-		public static List<SyntaxNode> QueryNodesAtPath(this SyntaxNode root, IEnumerable<SyntaxKind> path)
+    public static List<SyntaxNodeOrToken> QueryNodesOrTokensAtPath(this SyntaxNode root, params SyntaxKind[] path)
 		{
 			Debug.Assert(path.Count() > 0);
 
-			var result = new List<SyntaxNode>();
+      var result = new List<SyntaxNodeOrToken>();
 
-			void getNodesRecursive(SyntaxNode _root, ImmutableArray<SyntaxKind> _path)
+			void getNodesRecursive(SyntaxNodeOrToken _root, ImmutableArray<SyntaxKind> _path)
 			{
 				var currentKind = _path.First();
 				var reducedPath = _path.RemoveAt(0);
-				var currentKindChildren = _root.ChildNodes().Where((x) => x.IsKind(currentKind));
+				var currentKindChildren = _root.ChildNodesAndTokens().Where((x) => x.IsKind(currentKind));
 
 				foreach (var node in currentKindChildren)
 				{

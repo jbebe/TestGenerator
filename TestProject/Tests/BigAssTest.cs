@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using TestTypes;
 
 namespace TestProject
 {
   [TestClass]
-  class BigAssTest
+  partial class BigAssTest
   {
     [TestInitialize]
     public void Init()
@@ -19,7 +20,7 @@ namespace TestProject
     // comment that should be ignored
     [TestMethod] // should be parsed
     [TestComponent(Component.Alpha)] // add AL_ prefix
-    [LocalTest(SmokeTest = true, Production = true)] // generate local test, local smoke test, add ignore production flag
+    [LocalTest(SmokeTest = true/*, Production = true*/)] // generate local test, local smoke test, add ignore production flag
     [RemoteTest(SmokeTest = true, Production = true)]
     public void TestCase1()
     {
@@ -29,10 +30,12 @@ namespace TestProject
     [TestMethod]
     [TestComponent(Component.Beta)]
     [LocalTest(SmokeTest = true, Production = true)]
-    public void TestCase2()
+    public async Task TestCase2()
     {
       int a = 10;
       Debug.Assert(a == 5);
+
+      await Task.Yield();
     }
   }
 }

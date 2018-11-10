@@ -1,13 +1,16 @@
 using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestProject.Generated{
-	[TestClass]
-	public class UnitTest
+namespace TestProject
+{
+	public partial class UnitTest
 	{
-		[TestMethod]
-		protected void TestMethod()
+
+    [TestMethod]
+		public void L_TestMethod()
 		{
+		 TestMethod();
 		}
 	}
 }
