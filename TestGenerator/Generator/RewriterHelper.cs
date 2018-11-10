@@ -46,7 +46,8 @@ namespace TestGenerator.Generator
       var methodName = node.ChildTokens().First((x) => x.IsKind(SyntaxKind.IdentifierToken));
       var testTypeName = testType.ToString("G").Substring(0, 1).ToUpperInvariant() + "_";
       var componentName = GetComponentName(node);
-      var newMethodName = SyntaxFactory.Identifier(methodName.LeadingTrivia, $"{componentName}{testTypeName}{methodName.ValueText}", methodName.TrailingTrivia);
+      var shortComponentName = string.IsNullOrEmpty(componentName) ? componentName : componentName.Substring(0, 2).ToUpperInvariant() + "_";
+      var newMethodName = SyntaxFactory.Identifier(methodName.LeadingTrivia, $"{shortComponentName}{testTypeName}{methodName.ValueText}", methodName.TrailingTrivia);
       node = node.ReplaceToken(methodName, newMethodName);
 
       // Call original method instead of logic
@@ -88,10 +89,56 @@ namespace TestGenerator.Generator
       var closeBrace = SyntaxFactory.Token(indentTrivia.AsList(), SyntaxKind.CloseBraceToken, Common.NewLine.AsList());
       node = node.WithBody(SyntaxFactory.Block(openBrace, bodyList, closeBrace));
 
+      // Export TestType arguments and decorate the method with them individually
+      var arguments = GetTestTypeArguments(node);
+      MethodDeclarationSyntax createNewAttribute(string attributeName)
+      {
+        return node.AddAttributeLists(
+          SyntaxFactory.AttributeList(
+            SyntaxFactory.SeparatedList(new[] {
+                SyntaxFactory.Attribute(
+                  SyntaxFactory.IdentifierName(attributeName)
+                )
+              }
+            )
+          )
+          .WithTrailingTrivia(node.AttributeLists.First().GetTrailingTrivia())
+          .WithLeadingTrivia(indentTrivia)
+        );
+      }
+
+      if (arguments.SmokeTest)
+      {
+        node = createNewAttribute("SmokeTest");
+      }
+      if (arguments.Devel)
+      {
+        node = createNewAttribute("DevelTest");
+      }
+      if (arguments.Production)
+      {
+        node = createNewAttribute("ProductionTest");
+      }
+
+      if (!string.IsNullOrEmpty(componentName))
+      {
+        node = createNewAttribute(componentName + "Component");
+      }
+
+      // Remove unused attributes
+      var removableAttrLists = node.AttributeLists.Where((attribList) => attribList.Attributes.Any((attrib) =>
+      {
+        var testTypes = new[] { "TestComponent", "InMemoryTest", "LocalTest", "RemoteTest" }.ToList();
+        var attributeName = attrib.Name.GetText().ToString();
+        return testTypes.Contains(attributeName);
+      }));
+
+      node = node.RemoveNodes(removableAttrLists, SyntaxRemoveOptions.KeepNoTrivia);
+
       return node;
     }
 
-    private static string GetComponentName(MethodDeclarationSyntax node)
+    private string GetComponentName(MethodDeclarationSyntax node)
     {
       var attributes = node.AttributeLists.SelectMany((x) => x.Attributes);
       attributes = attributes.Where((x) => x.Name.ToString() == "TestComponent");
@@ -101,12 +148,43 @@ namespace TestGenerator.Generator
         foreach (var argument in componentAttribute.ArgumentList.Arguments)
         {
           var argumentTxt = argument.ToString();
-          var componentName = argumentTxt.Substring(argumentTxt.LastIndexOf('.') + 1, 2).ToUpperInvariant();
-          return componentName + "_";
+          var componentName = argumentTxt.Substring(argumentTxt.LastIndexOf('.') + 1);
+          return componentName;
         }
         throw new ArgumentException("Missing argument in TestComponent");
       }
       return "";
+    }
+
+    private TestTypeArguments GetTestTypeArguments(MethodDeclarationSyntax node)
+    {
+      var attributes = node.AttributeLists.SelectMany((x) => x.Attributes);
+      attributes = attributes.Where((x) => x.Name.ToString() == testType.ToString("G") + "Test");
+      var argumentsInfo = new TestTypeArguments();
+
+      if (attributes.Count() > 0)
+      {
+        var testTypeAttribute = attributes.First();
+        foreach (var argument in testTypeAttribute.ArgumentList.Arguments)
+        {
+          var argumentName = argument.NameEquals.Name.ToString();
+          var argumentValue = argument.ChildNodes().ElementAt(1).ChildTokens().First().ValueText;
+
+          switch (argumentName) {
+            case "SmokeTest":
+              argumentsInfo.SmokeTest = bool.Parse(argumentValue);
+              break;
+            case "Production":
+              argumentsInfo.Production = bool.Parse(argumentValue);
+              break;
+            case "Devel":
+              argumentsInfo.Devel = bool.Parse(argumentValue);
+              break;
+          }
+        }
+      }
+
+      return argumentsInfo;
     }
 
     public ClassDeclarationSyntax ProcessClassDeclaration(ClassDeclarationSyntax node)

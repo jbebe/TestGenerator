@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TestGenerator.Generator;
 using TestTypes;
 
 namespace TestGenerator.Generator
@@ -38,6 +38,26 @@ namespace TestGenerator.Generator
       node = helper.ProcessMethod(node);
       return base.VisitMethodDeclaration(node);
 		}
+
+    //public override SyntaxNode VisitAttribute(AttributeSyntax node)
+    //{
+    //  var testTypes = new[] { "LocalTest", "RemoteTest" }.ToList();
+    //  var attributeName = node.Name.GetText().ToString();
+    //  if (testTypes.Contains(attributeName))
+    //  {
+    //    return default(AttributeSyntax);
+    //  }
+    //  return base.VisitAttribute(node);
+    //}
+
+    //public override SyntaxNode VisitAttributeList(AttributeListSyntax node)
+    //{
+    //  if (node.Attributes.Count == 0)
+    //  {
+    //    return default(AttributeListSyntax);
+    //  }
+    //  return base.VisitAttributeList(node);
+    //}
 
   }
 }

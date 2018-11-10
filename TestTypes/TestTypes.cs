@@ -9,7 +9,17 @@ namespace TestTypes
 		Alpha, Beta
 	}
 
-	public class TestComponentAttribute : Attribute
+  public class AlphaComponentAttribute: Attribute
+  {
+
+  }
+
+  public class BetaComponentAttribute : AlphaComponentAttribute
+  {
+
+  }
+
+  public class TestComponentAttribute : Attribute
 	{
 		public TestComponentAttribute(Component _)
 		{
@@ -36,8 +46,32 @@ namespace TestTypes
 	{
 	}
 
-	public enum TestType
+  public class InMemoryTest : LocalTest
+  {
+  }
+
+  public enum TestType
 	{
 		InMemory, Local, Remote
 	}
+
+  public enum Type
+  {
+    Alpha, Beta
+  }
+
+  public class SmokeTest : Attribute
+  {
+
+  }
+
+  public class ProductionTest : Attribute
+  {
+
+  }
+
+  public class DevelTest : Attribute
+  {
+
+  }
 }

@@ -5,9 +5,16 @@ using TestTypes;
 
 namespace TestGenerator.Generator
 {
-	public class Common
+  public class TestTypeArguments
+  {
+    public bool SmokeTest { get; set; }
+    public bool Devel { get; set; }
+    public bool Production { get; set; }
+  }
+
+  public class Common
 	{
-		public static string GetGeneratedTestName(string fileName, TestType testType)
+    public static string GetGeneratedTestName(string fileName, TestType testType)
 			=> Regex.Replace(fileName, @"(\.cs)$", $".{testType:G}.Generated$1");
 
 		public static bool IsGeneratedTestFile(string fileName)

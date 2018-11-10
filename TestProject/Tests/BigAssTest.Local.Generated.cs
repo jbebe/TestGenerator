@@ -13,16 +13,17 @@ namespace TestProject
 
     
     [TestMethod] 
-    [TestComponent(Component.Alpha)] 
-    [LocalTest(SmokeTest = true)] 
-    [RemoteTest(SmokeTest = true, Production = true)]
+    [SmokeTest] 
+    [AlphaComponent] 
     public void AL_L_TestCase1()
     {
       TestCase1();
     }
+
     [TestMethod]
-    [TestComponent(Component.Beta)]
-    [LocalTest(SmokeTest = true, Production = true)]
+    [SmokeTest]
+    [ProductionTest]
+    [BetaComponent]
     public async Task BE_L_TestCase2()
     {
       await TestCase2();
