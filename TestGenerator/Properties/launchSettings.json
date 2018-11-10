@@ -2,7 +2,7 @@
   "profiles": {
     "TestGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\Development\\TestGenerator\\TestGenerator\\Test"
+      "commandLineArgs": "D:\\Development\\TestGenerator\\TestProject\\Tests"
     }
   }
 }

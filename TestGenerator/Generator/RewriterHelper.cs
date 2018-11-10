@@ -1,24 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static TestGenerator.Generator.SyntaxNodeExtension;
 
 namespace TestGenerator.Generator
 {
-	class RewriterHelper
-	{
-		public static SyntaxNode ProcessTestMethod(MethodDeclarationSyntax node)
-		{
+  class RewriterHelper
+  {
+    public static SyntaxNode ProcessTestMethod(MethodDeclarationSyntax node)
+    {
+      return node.Parent.RemoveNode(node, SyntaxRemoveOptions.KeepNoTrivia);
+    }
 
+    public static SyntaxNode ProcessNamespace(NamespaceDeclarationSyntax node)
+    {
+      var namespaceNode = node.QueryNodesAtPath(new[] { SyntaxKind.IdentifierName }).First();
 
-			return node;
-		}
+      var oldIdentifierToken = namespaceNode.GetFirstToken();
+      var identifierToken = SyntaxFactory.Identifier($"{oldIdentifierToken.ValueText}.Generated");
 
-		public static SyntaxNode ProcessNamespace(NamespaceDeclarationSyntax node)
-		{
-
-			return node;
-		}
-	}
+      return node.ReplaceToken(oldIdentifierToken, identifierToken);
+    }
+  }
 }

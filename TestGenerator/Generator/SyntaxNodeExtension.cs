@@ -65,7 +65,7 @@ namespace TestGenerator.Generator
 				{
 					if (reducedPath.IsEmpty)
 					{
-						result.Add(_root);
+						result.Add(node);
 					}
 					else
 					{
