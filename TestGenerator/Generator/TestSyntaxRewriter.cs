@@ -39,25 +39,5 @@ namespace TestGenerator.Generator
       return base.VisitMethodDeclaration(node);
 		}
 
-    //public override SyntaxNode VisitAttribute(AttributeSyntax node)
-    //{
-    //  var testTypes = new[] { "LocalTest", "RemoteTest" }.ToList();
-    //  var attributeName = node.Name.GetText().ToString();
-    //  if (testTypes.Contains(attributeName))
-    //  {
-    //    return default(AttributeSyntax);
-    //  }
-    //  return base.VisitAttribute(node);
-    //}
-
-    //public override SyntaxNode VisitAttributeList(AttributeListSyntax node)
-    //{
-    //  if (node.Attributes.Count == 0)
-    //  {
-    //    return default(AttributeListSyntax);
-    //  }
-    //  return base.VisitAttributeList(node);
-    //}
-
   }
 }

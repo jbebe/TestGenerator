@@ -14,7 +14,10 @@ namespace TestGenerator
 		{
 			Debug.Assert(args.Length > 0);
 
-			string[] testPaths = args;
+      Console.WriteLine("[info]: Start processing...");
+      var watch = Stopwatch.StartNew();
+
+      string[] testPaths = args;
 
 			foreach (string testPath in testPaths)
 			{
@@ -22,10 +25,15 @@ namespace TestGenerator
 
 				foreach (var testFile in testFiles.Where((x) => !Common.IsGeneratedTestFile(x)))
 				{
+          Console.WriteLine($"[info]: Processing file: {Path.GetFileName(testFile)}");
 					ProcessTestFile(testFile);
 				}
 			}
-		}
+
+      watch.Stop();
+      var elapsedMs = watch.ElapsedMilliseconds;
+      Console.WriteLine($"[info]: Processing test files ended. Speed: {elapsedMs} ms");
+    }
 
 		private static void ProcessTestFile(string testFilePath)
 		{
@@ -52,8 +60,8 @@ namespace TestGenerator
         File.WriteAllText(generatedTestFilePath, formattedOutput);
       }
 
-      //testTypes.AsParallel().ForAll(processFileWithTestType);
-      processFileWithTestType(TestType.Local);
+      testTypes.AsParallel().ForAll(processFileWithTestType);
+      //processFileWithTestType(TestType.Local);
 
     }
 	}

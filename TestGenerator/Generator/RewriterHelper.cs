@@ -165,21 +165,25 @@ namespace TestGenerator.Generator
       if (attributes.Count() > 0)
       {
         var testTypeAttribute = attributes.First();
-        foreach (var argument in testTypeAttribute.ArgumentList.Arguments)
+        if (testTypeAttribute.ArgumentList != null)
         {
-          var argumentName = argument.NameEquals.Name.ToString();
-          var argumentValue = argument.ChildNodes().ElementAt(1).ChildTokens().First().ValueText;
+          foreach (var argument in testTypeAttribute.ArgumentList.Arguments)
+          {
+            var argumentName = argument.NameEquals.Name.ToString();
+            var argumentValue = argument.ChildNodes().ElementAt(1).ChildTokens().First().ValueText;
 
-          switch (argumentName) {
-            case "SmokeTest":
-              argumentsInfo.SmokeTest = bool.Parse(argumentValue);
-              break;
-            case "Production":
-              argumentsInfo.Production = bool.Parse(argumentValue);
-              break;
-            case "Devel":
-              argumentsInfo.Devel = bool.Parse(argumentValue);
-              break;
+            switch (argumentName)
+            {
+              case "SmokeTest":
+                argumentsInfo.SmokeTest = bool.Parse(argumentValue);
+                break;
+              case "Production":
+                argumentsInfo.Production = bool.Parse(argumentValue);
+                break;
+              case "Devel":
+                argumentsInfo.Devel = bool.Parse(argumentValue);
+                break;
+            }
           }
         }
       }
