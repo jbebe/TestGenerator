@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestGenerator", "TestGenera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{71BD89D5-EC2A-4850-B799-1D43C2E4E868}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTypes", "TestTypes\TestTypes.csproj", "{622ABEA1-0855-4250-8CE6-2B9FDCEE6BD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCommon", "TestTypes\TestCommon.csproj", "{622ABEA1-0855-4250-8CE6-2B9FDCEE6BD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

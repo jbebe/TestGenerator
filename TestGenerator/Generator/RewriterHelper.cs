@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TestTypes;
+using TestCommon;
 using static TestGenerator.Generator.SyntaxNodeExtension;
 
 namespace TestGenerator.Generator
@@ -61,10 +61,10 @@ namespace TestGenerator.Generator
       {
         body = SyntaxFactory.ExpressionStatement(
           SyntaxFactory.AwaitExpression(
-            SyntaxFactory.Token(new SyntaxTriviaList(indentTrivia, indentTriviaHalf), SyntaxKind.AwaitKeyword, Common.Space.AsList()), 
+            SyntaxFactory.Token(new SyntaxTriviaList(indentTrivia, indentTriviaHalf), SyntaxKind.AwaitKeyword, TestHelper.Space.AsList()), 
             SyntaxFactory.InvocationExpression(SyntaxFactory.IdentifierName(methodName.ValueText))
           ),
-          Common.Semicolon
+          TestHelper.Semicolon
         );
       }
       else
@@ -75,18 +75,18 @@ namespace TestGenerator.Generator
               SyntaxFactory.Identifier(
                 new SyntaxTriviaList(indentTrivia, indentTriviaHalf),
                 methodName.ValueText,
-                Common.Empty.AsList()
+                TestHelper.Empty.AsList()
               )
             )
           ),
-          Common.Semicolon
+          TestHelper.Semicolon
         );
       }
 
       var bodyList = new SyntaxList<StatementSyntax>(body);
       Debug.Assert(indentTrivia.IsKind(SyntaxKind.WhitespaceTrivia));
-      var openBrace = SyntaxFactory.Token(indentTrivia.AsList(), SyntaxKind.OpenBraceToken, Common.NewLine.AsList());
-      var closeBrace = SyntaxFactory.Token(indentTrivia.AsList(), SyntaxKind.CloseBraceToken, Common.NewLine.AsList());
+      var openBrace = SyntaxFactory.Token(indentTrivia.AsList(), SyntaxKind.OpenBraceToken, TestHelper.NewLine.AsList());
+      var closeBrace = SyntaxFactory.Token(indentTrivia.AsList(), SyntaxKind.CloseBraceToken, TestHelper.NewLine.AsList());
       node = node.WithBody(SyntaxFactory.Block(openBrace, bodyList, closeBrace));
 
       // Export TestType arguments and decorate the method with them individually
@@ -201,7 +201,7 @@ namespace TestGenerator.Generator
       {
         var modifiers = node.Modifiers;
 
-        var partialKeyword = SyntaxFactory.Token(Common.Empty.AsList(), SyntaxKind.PartialKeyword, Common.Space.AsList());
+        var partialKeyword = SyntaxFactory.Token(TestHelper.Empty.AsList(), SyntaxKind.PartialKeyword, TestHelper.Space.AsList());
         var newModifiers = SyntaxFactory.TokenList(modifiers.Concat(new[] { partialKeyword }));
         newClassDeclaration = node.WithModifiers(newModifiers);
       }

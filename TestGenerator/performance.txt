@@ -1,0 +1,4 @@
+﻿[info]: Start processing...
+[info]: Processing file: BigAssTest.cs
+[info]: Processing file: UnitTest.cs
+[info]: Processing test files ended. Speed: 956 ms

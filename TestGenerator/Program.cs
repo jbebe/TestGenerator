@@ -3,8 +3,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using System.IO;
 using System.Diagnostics;
 using TestGenerator.Generator;
-using TestTypes;
+using TestCommon;
 using System;
+using TestGenerator.Resource;
 
 namespace TestGenerator
 {
@@ -12,57 +13,8 @@ namespace TestGenerator
 	{
 		public static void Main(string[] args)
 		{
-			Debug.Assert(args.Length > 0);
-
-      Console.WriteLine("[info]: Start processing...");
-      var watch = Stopwatch.StartNew();
-
-      string[] testPaths = args;
-
-			foreach (string testPath in testPaths)
-			{
-				var testFiles = Directory.GetFiles(testPath);
-
-				foreach (var testFile in testFiles.Where((x) => !Common.IsGeneratedTestFile(x)))
-				{
-          Console.WriteLine($"[info]: Processing file: {Path.GetFileName(testFile)}");
-					ProcessTestFile(testFile);
-				}
-			}
-
-      watch.Stop();
-      var elapsedMs = watch.ElapsedMilliseconds;
-      Console.WriteLine($"[info]: Processing test files ended. Speed: {elapsedMs} ms");
-    }
-
-		private static void ProcessTestFile(string testFilePath)
-		{
-			string testPath = Path.GetDirectoryName(testFilePath);
-			string testFileName = Path.GetFileName(testFilePath);
-			string testText = File.ReadAllText(testFilePath);
-
-      var testTypes = Enum.GetValues(typeof(TestType)).Cast<TestType>();
-
-      void processFileWithTestType(TestType testType)
-      {
-        // Get root
-        var syntaxTree = CSharpSyntaxTree.ParseText(testText);
-        var root = syntaxTree.GetRoot();
-
-        // Rewrite tests
-        var tsr = new TestSyntaxRewriter(testType);
-        root = tsr.Visit(root);
-
-        // Save file
-        string generatedTestName = Common.GetGeneratedTestName(testFileName, testType);
-        string generatedTestFilePath = Path.Join(testPath, generatedTestName);
-        string formattedOutput = root.ToFullString();
-        File.WriteAllText(generatedTestFilePath, formattedOutput);
-      }
-
-      testTypes.AsParallel().ForAll(processFileWithTestType);
-      //processFileWithTestType(TestType.Local);
-
+      var testGenerator = new TestGenerator(args);
+      testGenerator.Execute();
     }
 	}
 }
