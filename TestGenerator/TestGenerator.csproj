@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="2.9.0" />
     <PackageReference Include="Microsoft.Net.Compilers" Version="2.9.0">
       <PrivateAssets>all</PrivateAssets>

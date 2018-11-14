@@ -9,10 +9,14 @@ namespace TestGenerator.Generator
 {
   class TestSyntaxRewriter : CSharpSyntaxRewriter
   {
-    public readonly TestType testType;
+    public readonly TestClassName testType;
     public readonly RewriterHelper helper;
 
-    public TestSyntaxRewriter(TestType testType) : base()
+    /// <summary>
+    /// Initialize the rewriter instance by test type
+    /// </summary>
+    /// <param name="testType"></param>
+    public TestSyntaxRewriter(TestClassName testType) : base()
     {
       this.testType = testType;
       this.helper = new RewriterHelper(testType);

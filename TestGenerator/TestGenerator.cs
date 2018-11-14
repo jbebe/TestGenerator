@@ -58,9 +58,9 @@ namespace TestGenerator
       string fileName = Path.GetFileName(testFilePath);
       string fileContent = File.ReadAllText(testFilePath);
 
-      var testTypes = Enum.GetValues(typeof(TestType)).Cast<TestType>();
+      var testTypes = Enum.GetValues(typeof(TestClassName)).Cast<TestClassName>();
 
-      void processFileWithTestType(TestType testType)
+      void processFileWithTestType(TestClassName testType)
       {
         // Skip file generation if it is already up to date
         string generatedTestName = TestHelper.GenerateTestName(fileName, testType);
@@ -76,18 +76,19 @@ namespace TestGenerator
         var root = syntaxTree.GetRoot();
 
         // Rewrite tests
+        // This is where the actual processing happens
         var tsr = new TestSyntaxRewriter(testType);
         root = tsr.Visit(root);
 
         // Save file
-        string metadata = TestHelper.GenerateMetaData(fileContent);
+        string metadata = TestHelper.GetMetaData(fileContent);
         string formattedOutput = metadata + root.ToFullString();
         File.WriteAllText(generatedTestFilePath, formattedOutput);
       }
 
       // Run generation
       //testTypes.AsParallel().ForAll(processFileWithTestType);
-      processFileWithTestType(TestType.Local);
+      processFileWithTestType(TestClassName.Local);
     }
 
     private bool IsAlreadyGenerated(string testFileContent, string generatedTestFilePath)

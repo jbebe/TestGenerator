@@ -11,9 +11,9 @@ namespace TestGenerator.Generator
 {
   class RewriterHelper
   {
-    public readonly TestType testType;
+    public readonly TestClassName testType;
 
-    public RewriterHelper(TestType testType)
+    public RewriterHelper(TestClassName testType)
     {
       this.testType = testType;
     }

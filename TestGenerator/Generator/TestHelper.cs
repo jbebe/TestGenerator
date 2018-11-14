@@ -17,7 +17,7 @@ namespace TestGenerator.Generator
 
   public class TestHelper
 	{
-    public static string GenerateTestName(string fileName, TestType testType)
+    public static string GenerateTestName(string fileName, TestClassName testType)
 			=> Regex.Replace(fileName, @"(\.cs)$", $".{testType:G}.Generated$1");
 
 		public static bool IsGeneratedTestFile(string fileName)
@@ -42,7 +42,7 @@ namespace TestGenerator.Generator
       }
     }
 
-    public static string GenerateMetaData(string fileContent)
+    public static string GetMetaData(string fileContent)
     {
       string fileHash = GetHashOfContent(fileContent);
       return $"// {fileHash}" + Environment.NewLine;
